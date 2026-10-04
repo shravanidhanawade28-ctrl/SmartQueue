@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartQueue</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3e8ff;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .box {
+            background-color: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #6a1b9a;
+        }
+
+        h2 {
+            color: #444;
+        }
+
+        label {
+            font-size: 18px;
+        }
+
+        input {
+            padding: 10px;
+            width: 75%;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        select {
+            padding: 10px;
+            margin: 15px;
+            width: 80%;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4a116c;
+        }
+
+        #token {
+            color: #6a1b9a;
+            margin-top: 25px;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>SmartQueue</h1>
+
+    <h2>QR-Based Digital Token System</h2>
+
+    <p>Get your digital token without waiting in a long queue.</p>
+
+    <label>Student Name</label>
+    <br>
+    <input type="text" id="studentName" placeholder="Enter your name">
+
+    <br><br>
+
+    <label>Mobile Number</label>
+    <br>
+    <input type="tel" id="mobile" placeholder="Enter mobile number">
+
+    <br><br>
+
+    <label>Select Service</label>
+    <br>
+
+    <select id="service">
+        <option>Bonafide Certificate</option>
+        <option>Fee Related Service</option>
+        <option>Document Verification</option>
+    </select>
+
+    <br>
+
+    <button onclick="getToken()">Get Token</button>
+
+    <h2 id="token"></h2>
+
+    <div id="qrcode"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+
+let tokenNumber = 1;
+
+function getToken() {
+
+    let name = document.getElementById("studentName").value;
+    let mobile = document.getElementById("mobile").value;
+    let service = document.getElementById("service").value;
+
+    if (name === "" || mobile === "") {
+        alert("Please enter your name and mobile number.");
+        return;
+    }
+
+    let token = "T" + tokenNumber;
+
+    document.getElementById("token").innerHTML =
+        "Your Token Number is: " + token;
+
+    document.getElementById("qrcode").innerHTML = "";
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: "SmartQueue | Name: " + name +
+              " | Mobile: " + mobile +
+              " | Service: " + service +
+              " | Token: " + token,
+        width: 150,
+        height: 150
+    });
+
+    tokenNumber++;
+}
+
+</script>
+
+</body>
+</html>
