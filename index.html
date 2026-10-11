@@ -1,156 +1,421 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SmartQueue</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartQueue | College Digital Token System</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3e8ff;
-            text-align: center;
-            padding: 40px;
-        }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-        .box {
-            background-color: white;
-            max-width: 500px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        h1 {
-            color: #6a1b9a;
-        }
-
-        h2 {
-            color: #444;
-        }
-
-        label {
-            font-size: 18px;
-        }
-
-        input {
-            padding: 10px;
-            width: 75%;
-            font-size: 16px;
-            margin-top: 8px;
-        }
-
-        select {
-            padding: 10px;
-            margin: 15px;
-            width: 80%;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #6a1b9a;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #4a116c;
-        }
-
-        #token {
-            color: #6a1b9a;
-            margin-top: 25px;
-        }
-
-        #qrcode {
-            margin-top: 20px;
-        }
-    </style>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f5fb;
+      color: #202b3c;
+    }
+    header {
+      background: #183b70;
+      color: white;
+      padding: 22px 16px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 0; }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 15px;
+      background: white;
+    }
+    button, select, input {
+      font: inherit;
+      padding: 11px;
+      border-radius: 8px;
+      border: 1px solid #ccd5e3;
+    }
+    button {
+      border: none;
+      background: #2457a7;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #173e80; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .secondary { background: #66758b; }
+    .danger { background: #b53a3a; }
+    main {
+      max-width: 950px;
+      margin: 22px auto;
+      padding: 0 15px;
+    }
+    .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 12px #15294b10;
+    }
+    h2 { margin-top: 0; color: #183b70; }
+    label { display: block; margin: 12px 0 6px; }
+    input, select { width: 100%; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+    .stat {
+      background: #edf3ff;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+    }
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px;
+      color: #183b70;
+    }
+    #tokenResult {
+      display: none;
+      text-align: center;
+      border: 2px dashed #2457a7;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 18px;
+    }
+    #tokenNumber { font-size: 40px; color: #2457a7; }
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 15px;
+    }
+    .notice {
+      background: #fff6dc;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 10px 6px;
+      border-bottom: 1px solid #e4e9f0;
+      font-size: 14px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #68758a;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
 
 <body>
+<header>
+  <h1>SmartQueue</h1>
+  <p>QR-Based Digital Token System</p>
+  <p>College Administrative Office</p>
+</header>
 
-<div class="box">
+<nav>
+  <button onclick="showPage('student')">Student Portal</button>
+  <button onclick="showPage('status')">Live Queue Status</button>
+  <button onclick="showPage('staff')">Staff Dashboard</button>
+</nav>
 
-    <h1>SmartQueue</h1>
+<main>
+  <section id="student" class="panel">
+    <h2>Get Your Digital Token</h2>
+    <p>Select the service you need and generate a queue token.</p>
 
-    <h2>QR-Based Digital Token System</h2>
+    <label for="studentName">Student Name</label>
+    <input id="studentName" maxlength="60" placeholder="Enter your name">
 
-    <p>Get your digital token without waiting in a long queue.</p>
-
-    <label>Student Name</label>
-    <br>
-    <input type="text" id="studentName" placeholder="Enter your name">
-
-    <br><br>
-
-    <label>Mobile Number</label>
-    <br>
-    <input type="tel" id="mobile" placeholder="Enter mobile number">
-
-    <br><br>
-
-    <label>Select Service</label>
-    <br>
-
+    <label for="service">Select Service</label>
     <select id="service">
-        <option>Bonafide Certificate</option>
-        <option>Fee Related Service</option>
-        <option>Document Verification</option>
+      <option value="Bonafide Certificate">Bonafide Certificate</option>
+      <option value="Fee Queries">Fee Queries</option>
+      <option value="Examination Forms">Examination Forms</option>
+      <option value="Document Verification">Document Verification</option>
     </select>
 
-    <br>
+    <br><br>
+    <button onclick="generateToken()">Generate Token</button>
 
-    <button onclick="getToken()">Get Token</button>
+    <div id="tokenResult">
+      <h3>Your Token Number</h3>
+      <strong id="tokenNumber"></strong>
+      <p id="tokenService"></p>
+      <p id="tokenPosition"></p>
+      <p id="tokenWait"></p>
+      <div id="qrcode"></div>
+      <p>Save your token number and check the queue status.</p>
+    </div>
+  </section>
 
-    <h2 id="token"></h2>
+  <section id="status" class="panel hidden">
+    <h2>Current Queue Status</h2>
 
-    <div id="qrcode"></div>
-    <h2>Queue Status</h2>
+    <div class="grid">
+      <div class="stat">
+        Current Token
+        <strong id="currentToken">—</strong>
+      </div>
+      <div class="stat">
+        Waiting Students
+        <strong id="waitingCount">0</strong>
+      </div>
+      <div class="stat">
+        Estimated Wait
+        <strong id="waitTime">0 min</strong>
+      </div>
+    </div>
 
-<p id="nowServing">Now Serving: T1</p>
+    <h3>Queue List</h3>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody id="queueTable"></tbody>
+      </table>
+    </div>
+  </section>
 
-<p id="peopleAhead">People Ahead: 0</p>
+  <section id="staff" class="panel hidden">
+    <h2>Staff Dashboard</h2>
+    <p class="notice">
+      Demo only: this dashboard has no staff login. Do not use it for a real
+      college queue until staff authentication and database security are added.
+    </p>
 
-</div>
+    <div class="grid">
+      <button onclick="callNext()">Call Next Token</button>
+      <button class="secondary" onclick="markServed()">Mark Current Served</button>
+      <button class="danger" onclick="resetDemo()">Reset Demo Queue</button>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <p id="staffMessage" aria-live="polite"></p>
+  </section>
+</main>
+
+<footer>
+  SmartQueue — PRAYAS UG Project Prototype
+</footer>
 
 <script>
+  const STORAGE_KEY = "smartqueue_demo_v1";
+  const SERVICE_PREFIX = {
+    "Bonafide Certificate": "B",
+    "Fee Queries": "F",
+    "Examination Forms": "E",
+    "Document Verification": "D"
+  };
 
-let tokenNumber = 1;
+  let queue = loadQueue();
+  let currentTokenId = null;
+  let latestTokenId = null;
 
-function getToken() {
+  function loadQueue() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved && Array.isArray(saved)) return saved;
+    } catch (e) {}
+    return [];
+  }
 
-    let name = document.getElementById("studentName").value;
-    let mobile = document.getElementById("mobile").value;
-    let service = document.getElementById("service").value;
+  function saveQueue() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+    renderQueue();
+  }
 
-    if (name === "" || mobile === "") {
-        alert("Please enter your name and mobile number.");
-        return;
+  function showPage(id) {
+    ["student", "status", "staff"].forEach(page => {
+      document.getElementById(page).classList.toggle("hidden", page !== id);
+    });
+    renderQueue();
+  }
+
+  function generateToken() {
+    const name = document.getElementById("studentName").value.trim();
+    const service = document.getElementById("service").value;
+
+    if (!name) {
+      alert("Please enter your name.");
+      return;
     }
 
-    let token = "T" + tokenNumber;
+    const prefix = SERVICE_PREFIX[service];
+    const nextNumber = queue.filter(t => t.service === service).length + 1;
+    const token = prefix + String(nextNumber).padStart(3, "0");
 
-    document.getElementById("token").innerHTML =
-        "Your Token Number is: " + token;
+    const item = {
+      id: Date.now().toString() + Math.random().toString(16).slice(2),
+      name,
+      service,
+      token,
+      createdAt: Date.now(),
+      status: "Waiting"
+    };
 
-    document.getElementById("qrcode").innerHTML = "";
+    queue.push(item);
+    latestTokenId = item.id;
+    saveQueue();
 
-    new QRCode(document.getElementById("qrcode"), {
-       text: "https://shravanidhanawade28-ctrl.github.io/SmartQueue/",
-        width: 200,
-        height: 200
+    document.getElementById("tokenResult").style.display = "block";
+    document.getElementById("tokenNumber").textContent = token;
+    document.getElementById("tokenService").textContent = "Service: " + service;
+    updateTokenInfo(item);
+
+    const qr = document.getElementById("qrcode");
+    qr.innerHTML = "";
+    if (typeof QRCode !== "undefined") {
+      new QRCode(qr, {
+        text: location.href.split("#")[0] + "#token=" + encodeURIComponent(item.id),
+        width: 150,
+        height: 150
+      });
+    } else {
+      qr.textContent = "QR library could not load. Token: " + token;
+    }
+  }
+
+  function updateTokenInfo(item) {
+    const waitingAhead = queue.filter(t =>
+      t.status === "Waiting" &&
+      t.createdAt < item.createdAt
+    ).length;
+
+    document.getElementById("tokenPosition").textContent =
+      item.status === "Served" ? "Your token has been served." :
+      item.status === "Serving" ? "Your token is being served now." :
+      "People ahead of you: " + waitingAhead;
+
+    document.getElementById("tokenWait").textContent =
+      item.status === "Waiting"
+        ? "Estimated wait: " + (waitingAhead * 5) + " minutes"
+        : "";
+  }
+
+  function callNext() {
+    if (queue.some(t => t.status === "Serving")) {
+      document.getElementById("staffMessage").textContent =
+        "Serve or mark the current token as served first.";
+      return;
+    }
+
+    const next = queue.find(t => t.status === "Waiting");
+    if (!next) {
+      document.getElementById("staffMessage").textContent =
+        "No waiting tokens.";
+      return;
+    }
+
+    next.status = "Serving";
+    currentTokenId = next.id;
+    document.getElementById("staffMessage").textContent =
+      "Now serving " + next.token + " — " + next.service;
+    saveQueue();
+  }
+
+  function markServed() {
+    const current = queue.find(t => t.status === "Serving");
+    if (!current) {
+      document.getElementById("staffMessage").textContent =
+        "There is no token currently being served.";
+      return;
+    }
+
+    current.status = "Served";
+    currentTokenId = null;
+    document.getElementById("staffMessage").textContent =
+      current.token + " marked as served.";
+    saveQueue();
+  }
+
+  function resetDemo() {
+    if (!confirm("Reset all demo tokens on this browser?")) return;
+    queue = [];
+    currentTokenId = null;
+    latestTokenId = null;
+    saveQueue();
+    document.getElementById("staffMessage").textContent = "Demo queue reset.";
+    document.getElementById("tokenResult").style.display = "none";
+  }
+
+  function renderQueue() {
+    const current = queue.find(t => t.status === "Serving");
+    const waiting = queue.filter(t => t.status === "Waiting");
+
+    document.getElementById("currentToken").textContent =
+      current ? current.token : "—";
+    document.getElementById("waitingCount").textContent = waiting.length;
+    document.getElementById("waitTime").textContent =
+      (waiting.length * 5) + " min";
+
+    const tbody = document.getElementById("queueTable");
+    tbody.innerHTML = "";
+
+    queue.forEach(item => {
+      const ahead = queue.filter(t =>
+        t.status === "Waiting" &&
+        t.createdAt < item.createdAt
+      ).length;
+
+      const row = document.createElement("tr");
+      [item.token, item.service, item.status,
+       item.status === "Waiting" ? String(ahead) : "—"].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+      tbody.appendChild(row);
     });
 
-    tokenNumber++;
-}
+    if (latestTokenId) {
+      const latest = queue.find(t => t.id === latestTokenId);
+      if (latest) updateTokenInfo(latest);
+    }
+  }
 
+  // Refresh when another tab of this browser changes the demo queue.
+  window.addEventListener("storage", event => {
+    if (event.key === STORAGE_KEY) {
+      queue = loadQueue();
+      renderQueue();
+    }
+  });
+
+  // Open a token from a QR link on this browser.
+  const match = location.hash.match(/token=([^&]+)/);
+  if (match) {
+    const id = decodeURIComponent(match[1]);
+    const found = queue.find(t => t.id === id);
+    if (found) {
+      latestTokenId = found.id;
+      showPage("student");
+      document.getElementById("tokenResult").style.display = "block";
+      document.getElementById("tokenNumber").textContent = found.token;
+      document.getElementById("tokenService").textContent =
+        "Service: " + found.service;
+      updateTokenInfo(found);
+    }
+  }
+
+  renderQueue();
 </script>
-
 </body>
 </html>
+```
